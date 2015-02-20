@@ -16,10 +16,13 @@ public class LibGdxTestRunner extends Runner
 	
 	public LibGdxTestRunner(Class<?> testFileClass) throws InitializationError
 	{
-		try(ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader(testFileClass.getName(), "com.badlogic", "com.binarytweed.libgdx.test.InnerLibGdxTestRunner"))
+		String testFileClassName = testFileClass.getName();
+		String innerRunnerClassName = InnerLibGdxTestRunner.class.getName();
+		
+		try(ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic"))
 		{
-			innerRunnerClass = classLoader.loadClass(InnerLibGdxTestRunner.class.getName());
-			Class<?> testClass = classLoader.loadClass(testFileClass.getName());
+			innerRunnerClass = classLoader.loadClass(innerRunnerClassName);
+			Class<?> testClass = classLoader.loadClass(testFileClassName);
 			innerRunner = innerRunnerClass.cast(innerRunnerClass.getConstructor(Class.class).newInstance(testClass));
 		}
 		catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
