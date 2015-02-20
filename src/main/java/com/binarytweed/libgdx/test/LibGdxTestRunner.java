@@ -1,160 +1,61 @@
 package com.binarytweed.libgdx.test;
 
-import java.lang.Thread.UncaughtExceptionHandler;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
-import org.junit.internal.runners.model.EachTestNotifier;
+import org.junit.runner.Description;
+import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-
-public class LibGdxTestRunner extends BlockJUnit4ClassRunner
+public class LibGdxTestRunner extends Runner
 {
+	private final Object innerRunner;
+	private final Class<?> innerRunnerClass;
+	
+	
 	public LibGdxTestRunner(Class<?> klass) throws InitializationError
 	{
-		super(klass);
+		try(ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader("com.badlogic", "com.binarytweed.libgdx.test.InnerLibGdxTestRunner", "com.binarytweed.libgdx.test.LibGdxTest"))
+		{
+			innerRunnerClass = classLoader.loadClass(InnerLibGdxTestRunner.class.getName());
+			Class<?> testClass = classLoader.loadClass(klass.getName());
+			innerRunner = innerRunnerClass.cast(innerRunnerClass.getConstructor(Class.class).newInstance(testClass));
+		}
+		catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException | ClassNotFoundException | IOException e)
+		{
+			throw new InitializationError(e);
+		}	
 	}
-
-	volatile boolean finished = false;
 
 
 	@Override
-	public void run(final RunNotifier notifier)
+	public Description getDescription()
 	{
-		System.out.println("---------------------------------------------------");
-		System.out.println(this);
-		System.out.println("Starting run " + getDescription());
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 640;
-		config.height = 480;
-		config.title = "Test";
-		config.forceExit = false;
-
-		final LibGdxTestRunner runner = this;
-		LwjglApplication app = null;
-
 		try
 		{
-			Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler()
-			{
-
-				@Override
-				public void uncaughtException(Thread t, Throwable e)
-				{
-					runner.finished = true;
-					EachTestNotifier testNotifier = new EachTestNotifier(notifier, getDescription());
-					testNotifier.addFailure(e);
-				}
-			});
-
-			/*
-			 * Gdx.gl was not getting nulled out between tests. It may not be
-			 * the direct cause, but there was no OpenGL context available after
-			 * a few runs; null out Gdx.gl and it works again.
-			 * 
-			 * The 'correct' solution here is to use a new classloader for every
-			 * test class, but this works for now.
-			 */
-
-			Gdx.gl = null;
-			System.out.println("Gdx.gl: " + Gdx.gl);
-			System.out.println("Thread in TestRunner: " + Thread.currentThread());
-			app = new LwjglApplication(new ApplicationListener()
-			{
-
-				@Override
-				public void resume()
-				{
-				}
-
-
-				@Override
-				public void resize(int width, int height)
-				{
-				}
-
-
-				@Override
-				public void render()
-				{
-					if (!finished)
-					{
-						System.out.println("Running " + runner.getDescription().getDisplayName());
-
-						try
-						{
-							System.out.println("Thread in Render: " + Thread.currentThread());
-							runner.actualRun(notifier);
-						}
-						catch (Throwable t)
-						{
-							System.out.println("Throwable: " + t.getMessage());
-						}
-						finally
-						{
-							System.out.println("Finally " + runner.getDescription().getDisplayName());
-							runner.finished = true;
-						}
-					}
-				}
-
-
-				@Override
-				public void pause()
-				{
-				}
-
-
-				@Override
-				public void dispose()
-				{
-					System.out.println("Disposing");
-				}
-
-
-				@Override
-				public void create()
-				{
-				}
-			}, config);
-
-			while (!finished)
-			{
-				try
-				{
-					Thread.sleep(100);
-				}
-				catch (InterruptedException e)
-				{
-					System.out.println("Interrupted");
-					e.printStackTrace();
-				}
-			}
+			return (Description) innerRunnerClass.getMethod("getDescription").invoke(innerRunner);
 		}
-		catch (Throwable t)
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e)
 		{
-			System.out.println("b0rk");
-			System.out.println(t.getMessage());
+			throw new RuntimeException("Could not get description");
 		}
-		finally
-		{
-			if (app != null)
-			{
-				app.stop();
-			}
-		}
-
-		System.out.println("Ending run " + getDescription());
 	}
 
-
-	public void actualRun(RunNotifier notifier)
+	@Override
+	public void run(RunNotifier notifier)
 	{
-		super.run(notifier);
+		try
+		{
+			innerRunnerClass.getMethod("run", RunNotifier.class).invoke(innerRunner, notifier);
+		}
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e)
+		{
+			throw new RuntimeException("Could not invoke inner runner");
+		}
 	}
 
 }
