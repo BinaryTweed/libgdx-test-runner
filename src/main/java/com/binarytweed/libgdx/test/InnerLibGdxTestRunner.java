@@ -25,8 +25,9 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 	@Override
 	public void run(final RunNotifier notifier)
 	{
-		System.out.println("Moo "+this.getClass().getClassLoader());
 		System.out.println("Starting run " + getDescription());
+		System.out.println(getDescription()+" loaded by "+this.getClass().getClassLoader());
+		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
@@ -135,7 +136,7 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 		}
 		catch (Throwable t)
 		{
-			System.out.println("b0rk");
+			System.out.println("b0rk: "+t.getClass());
 			System.out.println(t.getMessage());
 		}
 		finally

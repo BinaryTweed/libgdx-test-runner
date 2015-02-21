@@ -16,6 +16,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class LibGdxTest
 {	
 	@Test
+	public void gdxLoadedByQuarantinedClassLoader()
+	{
+		Class<?> gdxClassLoader = Gdx.class.getClassLoader().getClass();
+		assertThat(gdxClassLoader.getName(), is(ExcludingTestClassLoader.class.getName()));
+	}
+	
+	
+	@Test
 	public void appListenerIsLoaded()
 	{
 		System.out.println("Test Classloader according to test: "+getClass().getClassLoader());

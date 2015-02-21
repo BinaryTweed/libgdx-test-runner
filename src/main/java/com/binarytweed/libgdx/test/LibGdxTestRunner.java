@@ -43,7 +43,7 @@ public class LibGdxTestRunner extends Runner
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e)
 		{
-			throw new RuntimeException("Could not get description");
+			throw new RuntimeException("Could not get description", e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class LibGdxTestRunner extends Runner
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e)
 		{
-			throw new RuntimeException("Could not invoke inner runner");
+			throw new RuntimeException("Could not invoke inner runner", e);
 		}
 	}
 

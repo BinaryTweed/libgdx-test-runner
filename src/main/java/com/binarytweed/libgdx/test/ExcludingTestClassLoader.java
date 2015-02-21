@@ -1,5 +1,6 @@
 package com.binarytweed.libgdx.test;
 
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,16 +27,35 @@ public class ExcludingTestClassLoader extends URLClassLoader
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException
 	{
-		if(! quarantinedClassNames.contains(name))
-		//if (! name.startsWith("com.badlogic") 
-		//	&& ! name.startsWith("com.binarytweed.libgdx.test.InnerLibGdxTestRunner")
-		//	&& ! name.startsWith("com.binarytweed.libgdx.test.LibGdxTest"))
+		boolean quarantine = false;
+		
+		for(String quarantinedPattern : quarantinedClassNames)
 		{
-			System.out.println("Loaded by parent: "+name+", calling super.findClass");
-			return super.loadClass(name);
+			if(name.startsWith(quarantinedPattern))
+			{
+				quarantine = true;
+				break;
+			}
 		}
-		Class<?> type = findClass(name);
-		System.out.println("Loaded by us: "+name+", loaded by "+type.getClassLoader());
-		return type;
+		
+		if(quarantine)
+		{
+			System.out.println("Detected quarantined class: "+name);
+			try
+			{
+				return findClass(name);
+			}
+			catch (ClassNotFoundException e)
+			{
+				System.out.println("Could not load "+name);
+				for(URL url : getURLs())
+				{
+					System.out.println("\t"+url);
+				}
+			}
+		}
+
+		System.out.println("Loaded by parent: "+name+", calling super.loadClass");
+		return super.loadClass(name);
 	}
 }
