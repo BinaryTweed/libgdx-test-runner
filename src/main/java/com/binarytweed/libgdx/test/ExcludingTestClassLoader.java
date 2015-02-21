@@ -48,10 +48,7 @@ public class ExcludingTestClassLoader extends URLClassLoader
 			catch (ClassNotFoundException e)
 			{
 				System.out.println("Could not load "+name);
-				for(URL url : getURLs())
-				{
-					System.out.println("\t"+url);
-				}
+				throw e;
 			}
 		}
 
