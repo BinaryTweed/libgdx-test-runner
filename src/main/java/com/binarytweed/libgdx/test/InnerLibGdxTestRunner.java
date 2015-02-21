@@ -3,6 +3,7 @@ package com.binarytweed.libgdx.test;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import org.junit.internal.runners.model.EachTestNotifier;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
@@ -136,8 +137,8 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 		}
 		catch (Throwable t)
 		{
-			System.out.println("b0rk: "+t.getClass());
-			System.out.println(t.getMessage());
+			notifier.fireTestFailure(new Failure(getDescription(), t));
+
 		}
 		finally
 		{

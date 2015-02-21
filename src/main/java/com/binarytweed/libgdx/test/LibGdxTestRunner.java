@@ -1,10 +1,10 @@
 package com.binarytweed.libgdx.test;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -57,7 +57,7 @@ public class LibGdxTestRunner extends Runner
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e)
 		{
-			throw new RuntimeException("Could not invoke inner runner", e);
+			notifier.fireTestFailure(new Failure(getDescription(), e));
 		}
 	}
 
