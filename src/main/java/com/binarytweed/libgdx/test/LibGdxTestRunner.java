@@ -19,14 +19,16 @@ public class LibGdxTestRunner extends Runner
 		String testFileClassName = testFileClass.getName();
 		String innerRunnerClassName = InnerLibGdxTestRunner.class.getName();
 		
-		try(ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic"))
+		ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic");
+		
+		try
 		{
 			innerRunnerClass = classLoader.loadClass(innerRunnerClassName);
 			Class<?> testClass = classLoader.loadClass(testFileClassName);
 			innerRunner = innerRunnerClass.cast(innerRunnerClass.getConstructor(Class.class).newInstance(testClass));
 		}
 		catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | ClassNotFoundException | IOException e)
+				| NoSuchMethodException | SecurityException | ClassNotFoundException  e)
 		{
 			throw new InitializationError(e);
 		}	
