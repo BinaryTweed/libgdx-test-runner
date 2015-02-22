@@ -15,12 +15,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
+public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 {
-	private static final Logger logger = LoggerFactory.getLogger(InnerLibGdxTestRunner.class);
+	private static final Logger logger = LoggerFactory.getLogger(LibGdxTestRunner.class);
 	
 	
-	public InnerLibGdxTestRunner(Class<?> klass) throws InitializationError
+	public LibGdxTestRunner(Class<?> klass) throws InitializationError
 	{
 		super(klass);
 	}
@@ -40,7 +40,7 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 		config.title = "Test";
 		config.forceExit = false;
 
-		final InnerLibGdxTestRunner runner = this;
+		final LibGdxTestRunner runner = this;
 		LwjglApplication app = null;
 
 		try
