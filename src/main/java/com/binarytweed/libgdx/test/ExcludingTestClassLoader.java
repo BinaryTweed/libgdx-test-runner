@@ -1,20 +1,25 @@
 package com.binarytweed.libgdx.test;
 
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class ExcludingTestClassLoader extends URLClassLoader
 {
+	private static final Logger logger = LoggerFactory.getLogger(ExcludingTestClassLoader.class);
+	
+	
 	private final Set<String> quarantinedClassNames;
 	
 	
 	public ExcludingTestClassLoader(String... quarantinedClassNames)
 	{
 		super(((URLClassLoader) getSystemClassLoader()).getURLs());
-		System.out.println("ExcludingTestClassLoader ("+this+") was loaded by "+getClass().getClassLoader());
+		logger.trace("[{}] was loaded by [{}]", getClass().getName(), getClass().getClassLoader());
 		
 		this.quarantinedClassNames = new HashSet<>();
 		for(String className : quarantinedClassNames)
@@ -40,19 +45,19 @@ public class ExcludingTestClassLoader extends URLClassLoader
 		
 		if(quarantine)
 		{
-			System.out.println("Detected quarantined class: "+name);
+			logger.debug("Detected quarantined class [{}]", name);
 			try
 			{
 				return findClass(name);
 			}
 			catch (ClassNotFoundException e)
 			{
-				System.out.println("Could not load "+name);
+				logger.error("Could not load [{}]", name);
 				throw e;
 			}
 		}
 
-		System.out.println("Loaded by parent: "+name+", calling super.loadClass");
+		logger.trace("[{}] being loaded by parent", name);
 		return super.loadClass(name);
 	}
 }

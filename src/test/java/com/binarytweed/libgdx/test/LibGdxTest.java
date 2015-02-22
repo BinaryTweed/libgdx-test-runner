@@ -26,8 +26,6 @@ public class LibGdxTest
 	@Test
 	public void appListenerIsLoaded()
 	{
-		System.out.println("Test Classloader according to test: "+getClass().getClassLoader());
-		System.out.println("GDX Classloader according to test: "+Gdx.class.getClassLoader());
 		ApplicationListener app = Gdx.app.getApplicationListener();
 		assertThat(app, notNullValue());
 	}

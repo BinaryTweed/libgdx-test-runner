@@ -7,6 +7,8 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -15,6 +17,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 {
+	private static final Logger logger = LoggerFactory.getLogger(InnerLibGdxTestRunner.class);
+	
+	
 	public InnerLibGdxTestRunner(Class<?> klass) throws InitializationError
 	{
 		super(klass);
@@ -26,8 +31,8 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 	@Override
 	public void run(final RunNotifier notifier)
 	{
-		System.out.println("Starting run " + getDescription());
-		System.out.println(getDescription()+" loaded by "+this.getClass().getClassLoader());
+		logger.debug("Starting run of [{}]", getDescription());
+		logger.trace("Test class [{}] loaded by class loader [{}]", getDescription(), this.getClass().getClassLoader());
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
@@ -61,9 +66,6 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 			 */
 
 			Gdx.gl = null;
-			System.out.println("Gdx.gl: " + Gdx.gl);
-			System.out.println("Thread in TestRunner: " + Thread.currentThread());
-			System.out.println("ClassLoader: "+this.getClass().getClassLoader());
 			app = new LwjglApplication(new ApplicationListener()
 			{
 				@Override
@@ -83,20 +85,16 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 				{
 					if (!finished)
 					{
-						System.out.println("Running " + runner.getDescription().getDisplayName());
-
 						try
 						{
-							System.out.println("Thread in Render: " + Thread.currentThread());
 							runner.actualRun(notifier);
 						}
 						catch (Throwable t)
 						{
-							System.out.println("Throwable: " + t.getMessage());
+							notifier.fireTestFailure(new Failure(getDescription(), t));
 						}
 						finally
 						{
-							System.out.println("Finally " + runner.getDescription().getDisplayName());
 							runner.finished = true;
 						}
 					}
@@ -112,13 +110,14 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 				@Override
 				public void dispose()
 				{
-					System.out.println("Disposing");
+					logger.trace("Disposing");
 				}
 
 
 				@Override
 				public void create()
 				{
+					logger.trace("Creating");
 				}
 			}, config);
 
@@ -130,15 +129,14 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 				}
 				catch (InterruptedException e)
 				{
-					System.out.println("Interrupted");
-					e.printStackTrace();
+					logger.error("TestRunner thread interrupted whilst sleeping");
+					notifier.fireTestFailure(new Failure(getDescription(), e));
 				}
 			}
 		}
 		catch (Throwable t)
 		{
 			notifier.fireTestFailure(new Failure(getDescription(), t));
-
 		}
 		finally
 		{
@@ -148,7 +146,7 @@ public class InnerLibGdxTestRunner extends BlockJUnit4ClassRunner
 			}
 		}
 
-		System.out.println("Ending run " + getDescription());
+		logger.trace("Ending run of [{}]", getDescription());
 	}
 
 
