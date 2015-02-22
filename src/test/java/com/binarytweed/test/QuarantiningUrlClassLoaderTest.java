@@ -5,25 +5,22 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.binarytweed.libgdx.test.scratch.ReferencedClass;
-import com.binarytweed.libgdx.test.scratch.ReferencingClass;
-
 @SuppressWarnings({"resource", "unchecked"})
 public class QuarantiningUrlClassLoaderTest
 {
 	@Test
 	public void quarantinedClassIsLoadedByUs() throws Exception
 	{
-		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.badlogic");
-		Class<?> gdxClass = loader.loadClass("com.badlogic.gdx.Gdx");
-		assertThat(gdxClass.getClassLoader(), equalTo((ClassLoader) loader));
+		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.binarytweed");
+		Class<?> quarantinedClass = loader.loadClass("com.binarytweed.test.ReferencingClass");
+		assertThat(quarantinedClass.getClassLoader(), equalTo((ClassLoader) loader));
 	}
 	
 	
 	@Test
 	public void otherClassIsLoadedByParent() throws Exception
 	{
-		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.badlogic");
+		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.binarytweed");
 		Class<?> otherClass = loader.loadClass("java.sql.Timestamp");
 		assertThat(otherClass.getClassLoader(), nullValue());
 	}

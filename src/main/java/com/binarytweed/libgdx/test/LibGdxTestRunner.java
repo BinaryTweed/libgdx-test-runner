@@ -1,6 +1,7 @@
 package com.binarytweed.libgdx.test;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -14,14 +15,21 @@ public class LibGdxTestRunner extends Runner
 {
 	private final Object innerRunner;
 	private final Class<?> innerRunnerClass;
+	private final QuarantinedPatternDiscoverer quarantinedPatternDiscoverer;
 	
 	
 	public LibGdxTestRunner(Class<?> testFileClass) throws InitializationError
 	{
+		quarantinedPatternDiscoverer = new QuarantinedPatternDiscoverer();
 		String testFileClassName = testFileClass.getName();
 		String innerRunnerClassName = InnerLibGdxTestRunner.class.getName();
 		
-		QuarantiningUrlClassLoader classLoader = new QuarantiningUrlClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic");
+		String[] quarantinedPatterns = quarantinedPatternDiscoverer.getQuarantinedPatternsOn(testFileClass);
+		String[] allPatterns = Arrays.copyOf(quarantinedPatterns, quarantinedPatterns.length + 2);
+		allPatterns[quarantinedPatterns.length] = testFileClassName;
+		allPatterns[quarantinedPatterns.length + 1] = innerRunnerClassName;
+		
+		QuarantiningUrlClassLoader classLoader = new QuarantiningUrlClassLoader(allPatterns);
 		
 		try
 		{
@@ -64,5 +72,4 @@ public class LibGdxTestRunner extends Runner
 			notifier.fireTestFailure(new Failure(getDescription(), e));
 		}
 	}
-
 }

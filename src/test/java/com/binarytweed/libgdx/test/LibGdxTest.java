@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.binarytweed.test.QuarantiningUrlClassLoader;
 
 @RunWith(LibGdxTestRunner.class)
+@Quarantine({"com.badlogic"})
 public class LibGdxTest
 {	
 	@Test

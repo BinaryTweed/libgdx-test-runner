@@ -1,4 +1,4 @@
-package com.binarytweed.libgdx.test.scratch;
+package com.binarytweed.test;
 
 
 public class ReferencingClass
