@@ -8,6 +8,7 @@ import java.net.URLClassLoader;
 
 import org.junit.Test;
 
+@SuppressWarnings({"resource", "unchecked"})
 public class ReferencingTest
 {
 	@Test
@@ -38,7 +39,6 @@ public class ReferencingTest
 		
 
 		ReferencedClass.VALUE = 100;
-		ReferencingClass instance = new ReferencingClass();
 		assertThat((String) isolated.getDeclaredMethod("getReferencedMember").invoke(isolated.newInstance()), is("0"));
 	}
 	
