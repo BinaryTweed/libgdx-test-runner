@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.binarytweed.test.QuarantiningUrlClassLoader;
 
 @RunWith(LibGdxTestRunner.class)
 public class LibGdxTest
@@ -19,7 +20,7 @@ public class LibGdxTest
 	public void gdxLoadedByQuarantinedClassLoader()
 	{
 		Class<?> gdxClassLoader = Gdx.class.getClassLoader().getClass();
-		assertThat(gdxClassLoader.getName(), is(ExcludingTestClassLoader.class.getName()));
+		assertThat(gdxClassLoader.getName(), is(QuarantiningUrlClassLoader.class.getName()));
 	}
 	
 	

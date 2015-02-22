@@ -8,6 +8,8 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
+import com.binarytweed.test.QuarantiningUrlClassLoader;
+
 public class LibGdxTestRunner extends Runner
 {
 	private final Object innerRunner;
@@ -19,7 +21,7 @@ public class LibGdxTestRunner extends Runner
 		String testFileClassName = testFileClass.getName();
 		String innerRunnerClassName = InnerLibGdxTestRunner.class.getName();
 		
-		ExcludingTestClassLoader classLoader = new ExcludingTestClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic");
+		QuarantiningUrlClassLoader classLoader = new QuarantiningUrlClassLoader(testFileClassName, innerRunnerClassName, "com.badlogic");
 		
 		try
 		{

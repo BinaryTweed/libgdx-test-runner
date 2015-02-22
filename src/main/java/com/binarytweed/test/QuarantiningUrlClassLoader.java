@@ -1,4 +1,4 @@
-package com.binarytweed.libgdx.test;
+package com.binarytweed.test;
 
 import java.net.URLClassLoader;
 import java.util.HashSet;
@@ -8,15 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class ExcludingTestClassLoader extends URLClassLoader
+public class QuarantiningUrlClassLoader extends URLClassLoader
 {
-	private static final Logger logger = LoggerFactory.getLogger(ExcludingTestClassLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(QuarantiningUrlClassLoader.class);
 	
 	
 	private final Set<String> quarantinedClassNames;
 	
 	
-	public ExcludingTestClassLoader(String... quarantinedClassNames)
+	public QuarantiningUrlClassLoader(String... quarantinedClassNames)
 	{
 		super(((URLClassLoader) getSystemClassLoader()).getURLs());
 		logger.trace("[{}] was loaded by [{}]", getClass().getName(), getClass().getClassLoader());
