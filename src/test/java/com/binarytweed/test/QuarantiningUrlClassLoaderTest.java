@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.binarytweed.libgdx.test.scratch.ReferencedClass;
 import com.binarytweed.libgdx.test.scratch.ReferencingClass;
-import com.binarytweed.test.QuarantiningUrlClassLoader;
 
 @SuppressWarnings({"resource", "unchecked"})
 public class QuarantiningUrlClassLoaderTest
@@ -27,15 +26,6 @@ public class QuarantiningUrlClassLoaderTest
 		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.badlogic");
 		Class<?> otherClass = loader.loadClass("java.sql.Timestamp");
 		assertThat(otherClass.getClassLoader(), nullValue());
-	}
-	
-	
-	@Test
-	public void otherQuarantinedClassesAvailable() throws Exception
-	{
-		QuarantiningUrlClassLoader loader = new QuarantiningUrlClassLoader("com.badlogic");
-		Class<?> gdxClass = loader.loadClass("com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration");
-		assertThat(gdxClass.getClassLoader(), equalTo((ClassLoader) loader));
 	}
 	
 	
