@@ -4,6 +4,25 @@
 	<groupId>com.binarytweed</groupId>
 	<artifactId>libgdx-test-runner</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<packaging>jar</packaging>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>JUnit Runner that runs tests from within a LibGDX ApplicationListener</description>
+	<url>http://https://github.com/BinaryTweed/quarantining-test-runner</url>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Deejay</name>
+			<email>github@binarytweed.com</email>
+			<organization>Binary Tweed</organization>
+			<organizationUrl>http://www.binarytweed.com</organizationUrl>
+		</developer>
+	</developers>
 
 	<properties>
 		<gdx.version>1.5.4</gdx.version>
@@ -19,6 +38,30 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
