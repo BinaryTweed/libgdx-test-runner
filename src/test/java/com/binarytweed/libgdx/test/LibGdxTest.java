@@ -11,10 +11,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.binarytweed.test.DelegateRunningTo;
+import com.binarytweed.test.Quarantine;
+import com.binarytweed.test.QuarantiningRunner;
 import com.binarytweed.test.QuarantiningUrlClassLoader;
 
-@RunWith(LibGdxTestRunner.class)
+@RunWith(QuarantiningRunner.class)
 @Quarantine({"com.badlogic"})
+@DelegateRunningTo(InnerLibGdxTestRunner.class)
 public class LibGdxTest
 {	
 	@Test
