@@ -16,6 +16,73 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 {
+	private final class JunitApplicationListener implements ApplicationListener
+	{
+		private final RunNotifier notifier;
+		private final LibGdxTestRunner runner;
+
+
+		private JunitApplicationListener(RunNotifier notifier, LibGdxTestRunner runner)
+		{
+			this.notifier = notifier;
+			this.runner = runner;
+		}
+
+
+		@Override
+		public void resume()
+		{
+		}
+
+
+		@Override
+		public void resize(int width, int height)
+		{
+		}
+
+
+		@Override
+		public void render()
+		{
+			if (!finished)
+			{
+				try
+				{
+					runner.actualRun(notifier);
+				}
+				catch (Throwable t)
+				{
+					notifier.fireTestFailure(new Failure(getDescription(), t));
+				}
+				finally
+				{
+					runner.finished = true;
+				}
+			}
+		}
+
+
+		@Override
+		public void pause()
+		{
+		}
+
+
+		@Override
+		public void dispose()
+		{
+			logger.trace("Disposing");
+		}
+
+
+		@Override
+		public void create()
+		{
+			logger.trace("Creating");
+		}
+	}
+
+
 	private static final Logger logger = LoggerFactory.getLogger(LibGdxTestRunner.class);
 	
 	
@@ -55,60 +122,7 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 				}
 			});
 
-			app = new LwjglApplication(new ApplicationListener()
-			{
-				@Override
-				public void resume()
-				{
-				}
-
-
-				@Override
-				public void resize(int width, int height)
-				{
-				}
-
-
-				@Override
-				public void render()
-				{
-					if (!finished)
-					{
-						try
-						{
-							runner.actualRun(notifier);
-						}
-						catch (Throwable t)
-						{
-							notifier.fireTestFailure(new Failure(getDescription(), t));
-						}
-						finally
-						{
-							runner.finished = true;
-						}
-					}
-				}
-
-
-				@Override
-				public void pause()
-				{
-				}
-
-
-				@Override
-				public void dispose()
-				{
-					logger.trace("Disposing");
-				}
-
-
-				@Override
-				public void create()
-				{
-					logger.trace("Creating");
-				}
-			}, config);
+			app = new LwjglApplication(new JunitApplicationListener(notifier, runner), config);
 
 			while (!finished)
 			{
