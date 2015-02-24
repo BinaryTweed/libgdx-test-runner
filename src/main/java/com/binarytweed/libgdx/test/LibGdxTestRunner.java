@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -56,16 +55,6 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 				}
 			});
 
-			/*
-			 * Gdx.gl was not getting nulled out between tests. It may not be
-			 * the direct cause, but there was no OpenGL context available after
-			 * a few runs; null out Gdx.gl and it works again.
-			 * 
-			 * The 'correct' solution here is to use a new classloader for every
-			 * test class, but this works for now.
-			 */
-
-			Gdx.gl = null;
 			app = new LwjglApplication(new ApplicationListener()
 			{
 				@Override
