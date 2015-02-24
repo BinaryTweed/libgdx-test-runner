@@ -12,7 +12,8 @@ A JUnit test runner that runs test methods in a LibGDX `ApplicationListener`. Th
 @RunWith(QuarantiningRunner.class)
 @Quarantine({"com.badlogic", "com.binarytweed.libgdx.test"})
 @DelegateRunningTo(LibGdxTestRunner.class)
-public class MyLibGdxTest {
+public class MyLibGdxTest
+{
 
    @Test
    public void loadTexture()
@@ -29,7 +30,7 @@ public class MyLibGdxTest {
 
 ## Assets
 
-If your assets are on the (test) classpath, they should just work. If you want to use separate test assets, you can go Maven-tastic and stick them in `src/test/resources/'`.
+If your assets are on the (test) classpath, they should just work. If you want to use separate test assets, you can go Maven-tastic and stick them in `src/test/resources/`.
 
 ## Known Issues
 1. The ApplicationListener's config is hardcoded. Please raise an issue letting me know which aspects you want to be parameterisable
