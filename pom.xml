@@ -147,6 +147,7 @@
 			<artifactId>gdx-platform</artifactId>
 			<version>${gdx.version}</version>
 			<classifier>natives-desktop</classifier>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
