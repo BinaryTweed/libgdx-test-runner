@@ -17,7 +17,7 @@ import com.binarytweed.test.QuarantiningRunner;
 import com.binarytweed.test.QuarantiningUrlClassLoader;
 
 @RunWith(QuarantiningRunner.class)
-@Quarantine({"com.badlogic"})
+@Quarantine({"com.badlogic", "com.binarytweed.libgdx.test"})
 @DelegateRunningTo(LibGdxTestRunner.class)
 public class LibGdxTest
 {	

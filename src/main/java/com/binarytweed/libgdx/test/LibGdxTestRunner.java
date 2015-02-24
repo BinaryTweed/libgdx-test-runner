@@ -10,79 +10,11 @@ import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 {
-	private final class JunitApplicationListener implements ApplicationListener
-	{
-		private final RunNotifier notifier;
-		private final LibGdxTestRunner runner;
-
-
-		private JunitApplicationListener(RunNotifier notifier, LibGdxTestRunner runner)
-		{
-			this.notifier = notifier;
-			this.runner = runner;
-		}
-
-
-		@Override
-		public void resume()
-		{
-		}
-
-
-		@Override
-		public void resize(int width, int height)
-		{
-		}
-
-
-		@Override
-		public void render()
-		{
-			if (!finished)
-			{
-				try
-				{
-					runner.actualRun(notifier);
-				}
-				catch (Throwable t)
-				{
-					notifier.fireTestFailure(new Failure(getDescription(), t));
-				}
-				finally
-				{
-					runner.finished = true;
-				}
-			}
-		}
-
-
-		@Override
-		public void pause()
-		{
-		}
-
-
-		@Override
-		public void dispose()
-		{
-			logger.trace("Disposing");
-		}
-
-
-		@Override
-		public void create()
-		{
-			logger.trace("Creating");
-		}
-	}
-
-
 	private static final Logger logger = LoggerFactory.getLogger(LibGdxTestRunner.class);
 	
 	
@@ -91,7 +23,19 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 		super(klass);
 	}
 
-	volatile boolean finished = false;
+	private volatile boolean finished = false;
+	
+	
+	public boolean isFinished()
+	{
+		return finished;
+	}
+	
+	
+	public void setFinished()
+	{
+		finished = true;
+	}
 
 
 	@Override
@@ -116,7 +60,7 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 				@Override
 				public void uncaughtException(Thread t, Throwable e)
 				{
-					runner.finished = true;
+					runner.setFinished();
 					EachTestNotifier testNotifier = new EachTestNotifier(notifier, getDescription());
 					testNotifier.addFailure(e);
 				}
@@ -124,7 +68,7 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 
 			app = new LwjglApplication(new JunitApplicationListener(notifier, runner), config);
 
-			while (!finished)
+			while (!isFinished())
 			{
 				try
 				{
@@ -153,9 +97,8 @@ public class LibGdxTestRunner extends BlockJUnit4ClassRunner
 	}
 
 
-	public void actualRun(RunNotifier notifier)
+	protected void invokeParentRun(RunNotifier notifier)
 	{
 		super.run(notifier);
 	}
-
 }
