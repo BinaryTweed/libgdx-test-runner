@@ -10,7 +10,7 @@ A JUnit test runner that runs test methods in a LibGDX `ApplicationListener`. Th
 
 ```java
 @RunWith(QuarantiningRunner.class)
-@Quarantine({"com.badlogic", "com.binarytweed.libgdx.test"})
+@Quarantine({"com.badlogic", "com.binarytweed.libgdx.test", "com.yourgame.package"})
 @DelegateRunningTo(LibGdxTestRunner.class)
 public class MyLibGdxTest
 {
@@ -25,7 +25,7 @@ public class MyLibGdxTest
 ```
 
 1. Annotate your test class with `@RunWith(QuarantiningRunner.class)`. This will use a `Runner` that loads classes specified below with a separate `ClassLoader` for each test.
-1. Use `@Quarantine("com.badlogic", "com.binarytweed.libgdx.test")` to specify that classes from these packages will be loaded in a separate `ClassLoader`, so that the `Gdx.*` statics will be reset between tests.
+1. Use `@Quarantine("com.badlogic", "com.binarytweed.libgdx.test", "com.yourgame.package")` to specify that classes from these packages will be loaded in a separate `ClassLoader`, so that the `Gdx.*` statics will be reset between tests. **Add the package/classnames of things that will access Gdx.*,** as otherwise they will looking at the Gdx.* loaded by the default classloader, instead of the quarantined one.
 1. Specify `@DelegateRunningTo(LibGdxTestRunner.class)` so that `QuarantiningRunner` knows to use `LibGdxTestRunner`, which runs your tests in an `ApplicationListener	` instance.
 
 ## Assets
