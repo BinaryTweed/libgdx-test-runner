@@ -120,7 +120,7 @@
 		<dependency>
 			<groupId>com.binarytweed</groupId>
 			<artifactId>quarantining-test-runner</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		
 		<dependency>
